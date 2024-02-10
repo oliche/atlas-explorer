@@ -1,0 +1,3 @@
+iblatlas
+pyqtgraph
+PyQt6go
