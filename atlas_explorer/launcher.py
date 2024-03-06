@@ -1,8 +1,7 @@
 from pathlib import Path
 import numpy as np
-from iblapps.atlasview import atlasview  # mouais il va falloir changer ça
-self = atlasview.view()  # need to have an output argument here or the garbage collector will clean
-# it up and boom
+from atlas_explorer.gui import atlasview  # mouais il va falloir changer ça
+self = atlasview()
 
 """ Roadmap
     - swap volumes combox (label RGB option / density)
@@ -22,9 +21,9 @@ self = atlasview.view()  # need to have an output argument here or the garbage c
 # chans = np.load(
 #     Path(atlasview.__file__).parent.joinpath('channels_test.npy'), allow_pickle=True)
 # av.add_scatter_feature(chans)
-self.ctrl.fig_tree.uiTreeRegions
-
-self.ctrl.fig_tree.show()
+# self.ctrl.fig_tree.uiTreeRegions
+#
+# self.ctrl.fig_tree.show()
 
 
 ## %%

@@ -15,13 +15,14 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 import numpy as np
-from PyQt5 import QtWidgets, uic
-from PyQt5.QtGui import QTransform
 import pyqtgraph as pg
 import matplotlib
 
+from PySide6 import QtWidgets
+from PySide6.QtGui import QTransform
+
 from iblatlas.atlas import AllenAtlas
-from easyqc import qt
+import atlas_explorer.qtutils as qtutils
 
 
 class TopView(QtWidgets.QMainWindow):
@@ -46,9 +47,9 @@ class TopView(QtWidgets.QMainWindow):
 
     def __init__(self, **kwargs):
         super(TopView, self).__init__()
+        self = qtutils.load_ui(Path(__file__).parent.joinpath('topview.ui'), self)
         self.ctrl = ControllerTopView(self, **kwargs)
         self.ctrl.image_layers = [ImageLayer()]
-        uic.loadUi(Path(__file__).parent.joinpath('topview.ui'), self)
         self.plotItem_topview.setAspectLocked(True)
         self.plotItem_topview.addItem(self.ctrl.imageItem)
         # setup one horizontal and one vertical line that can be moved
@@ -138,7 +139,6 @@ class TreeView(QtWidgets.QWidget):
     def __init__(self, topview: TopView):
         super(TreeView, self).__init__()
         self.topview = topview
-        uic.loadUi(Path(__file__).parent.joinpath('treeview.ui'), self)
 
 
 class SliceView(QtWidgets.QWidget):
@@ -150,7 +150,7 @@ class SliceView(QtWidgets.QWidget):
         super(SliceView, self).__init__()
         self.topview = topview
         self.ctrl = SliceController(self, waxis, haxis, daxis)
-        uic.loadUi(Path(__file__).parent.joinpath('sliceview.ui'), self)
+        self = qtutils.load_ui(Path(__file__).parent.joinpath('sliceview.ui'), self)
         self.add_image_layer(slice_kwargs={'volume': 'image', 'mode': 'clip'},
                              pg_kwargs={'opacity': 0.8})
         self.add_image_layer(slice_kwargs={'volume': 'annotation', 'mode': 'clip'},
@@ -378,9 +378,9 @@ class ImageLayer:
     slice_kwargs: dict = field(default_factory=lambda: {'volume': 'image', 'mode': 'clip'})
 
 
-def view(res=25, title=None, brainmap='Allen'):
+def atlasview(res=25, title=None, brainmap='Allen'):
     """ application entry point """
-    qt.create_app()
+    qtutils.create_app()
     av = TopView._get_or_create(title=title, res=res, brainmap=brainmap)
     av.show()
     return av
@@ -388,7 +388,7 @@ def view(res=25, title=None, brainmap='Allen'):
 
 def main():
     """ application entry point """
-    app = QtWidgets.QApplication([])
+    app = QtWidgets.QApplication()
     w = TopView()
     w.show()
     app.exec_()
